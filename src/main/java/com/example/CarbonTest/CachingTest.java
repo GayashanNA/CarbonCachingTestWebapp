@@ -39,16 +39,20 @@ public class CachingTest extends HttpServlet {
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		String item = req.getParameter("item");
+		if (item == null) {
+			resp.getWriter().write(
+					"<html><body>Item cannot be empty!</body></html>");
+			return;
+		}
 		System.out.println("Item " + item);
 
 		// if new amount is defined add that to the cache
 		String amount = req.getParameter("amount");
 		if (amount != null) {
 			cache.put(item, amount);
-			System.out
-					.println("Adding " + item + " : " + amount + " to cache.");
+			System.out.println("Adding " + item + " : " + amount + " to cache.");
 		}
-		
+
 		amount = cache.get(item);
 		resp.getWriter().write(
 				"<html><body>Item : " + item + "<br/>Amount : " + amount
