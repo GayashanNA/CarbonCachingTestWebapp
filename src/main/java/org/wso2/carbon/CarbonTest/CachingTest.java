@@ -50,7 +50,7 @@ public class CachingTest extends HttpServlet {
 
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		log.info("Starting....");
+		log.info("Starting");
 		String item;
 		String amount;
 
@@ -63,18 +63,20 @@ public class CachingTest extends HttpServlet {
 			log.warn("Item cannot be empty!");
 			return;
 		}
-		
+
 		log.info("Received item: " + item);
 		amount = req.getParameter("amount");
 		if (amount != null) {
 			// if a new amount is defined add that to the cache
 			cache.put(item, amount);
-			log.info("Added " + item + " : " + amount + " to cache.");
+			log.info("Added " + item + " : " + amount + " to cache");
 		}
 		// try to access the cache more than needed
 		amount = cache.get(item);
+		log.info("Amount : " + amount);
+		
 		out.println("Item : " + item);
 		out.println("Amount : " + amount);
-		log.info("Finished processing request...");
+		log.info("Finished processing");
 	}
 }
