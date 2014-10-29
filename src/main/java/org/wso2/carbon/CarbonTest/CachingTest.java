@@ -2,6 +2,7 @@ package org.wso2.carbon.CarbonTest;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.cache.CacheManager;
 import javax.cache.Cache;
 import javax.cache.Caching;
+import javax.cache.CacheConfiguration;
 
 import org.apache.log4j.Logger;
 
@@ -26,14 +28,18 @@ public class CachingTest extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
+		String cacheName = "expiringCache";
+		String cacheManagerName = "testCacheManager";
 		// get the cache from javax.cache api
 		cacheManager = Caching.getCacheManagerFactory().getCacheManager(
-				"testCacheManager");
-		cache = cacheManager.getCache("simpleCache");
-		// cache = cacheManager.<String,
-		// Integer>createCacheBuilder(cacheName).setExpiry(CacheConfiguration.ExpiryType.MODIFIED,
-		// new CacheConfiguration.Duration(TimeUnit.SECONDS,
-		// 10)).setStoreByValue(false).build();
+				cacheManagerName);
+//		cache = cacheManager.getCache(cacheName);
+		// set default expiry time of the cache to 10s
+		cache = cacheManager
+				.<String, String> createCacheBuilder(cacheName)
+				.setExpiry(CacheConfiguration.ExpiryType.MODIFIED,
+						new CacheConfiguration.Duration(TimeUnit.SECONDS, 2))
+				.setStoreByValue(false).build();
 	}
 
 	@Override
@@ -74,7 +80,7 @@ public class CachingTest extends HttpServlet {
 		// try to access the cache more than needed
 		amount = cache.get(item);
 		log.info("Amount : " + amount);
-		
+
 		out.println("Item : " + item);
 		out.println("Amount : " + amount);
 		log.info("Finished processing");
