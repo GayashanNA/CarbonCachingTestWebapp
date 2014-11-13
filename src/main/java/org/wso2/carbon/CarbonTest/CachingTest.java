@@ -53,6 +53,7 @@ public class CachingTest extends HttpServlet {
 				cacheManagerName);
 //		cache = cacheManager.getCache(cacheName);
 		// set default expiry time of the cache
+		cacheManager.removeCache(cacheName);
 		cache = cacheManager
 				.<String, String> createCacheBuilder(cacheName)
 				.setExpiry(CacheConfiguration.ExpiryType.MODIFIED,
